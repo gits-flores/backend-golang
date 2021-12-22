@@ -17,6 +17,8 @@ func main() {
 		return c.String(http.StatusOK, "Hello World")
 	})
 
+	e.Static("/uploads", "public/uploads")
+
 	database.Init(e)
 	routes.InitializeRoutes(e)
 
