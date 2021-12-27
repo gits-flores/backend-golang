@@ -10,7 +10,7 @@ import (
 func Migration(e *echo.Echo, db *gorm.DB) {
 	e.Logger.Info("Memulai dengan automigrate")
 
-	err := db.AutoMigrate(&entity.User{}, &entity.Article{})
+	err := db.AutoMigrate(&entity.User{}, &entity.Article{}, &entity.SavedArticle{})
 
 	if err != nil {
 		e.Logger.Error(err)
