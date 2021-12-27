@@ -1,6 +1,7 @@
 package main
 
 import (
+	"capstone/app/api/controllers"
 	"capstone/app/api/routes"
 	"capstone/app/config"
 	"capstone/app/database"
@@ -16,6 +17,9 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello World")
 	})
+
+	e.POST("/register", controllers.Register)
+	e.POST("/login", controllers.Login)
 
 	e.Static("/uploads", "public/uploads")
 
