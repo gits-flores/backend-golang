@@ -30,19 +30,9 @@ func Login(c echo.Context) error {
 		})
 	}
 
-	token, err := SignIn(c, u.Email, u.Password)
-	if err != nil {
-		return utils.ResponseError(c, utils.Error{
-			Code:    http.StatusInternalServerError,
-			Message: err.Error(),
-		})
-	}
+	token := SignIn(c, u.Email, u.Password)
 
-	return utils.ResponsesLogin(c, utils.JSONResponsesLogin{
-		Code:    http.StatusCreated,
-		Token:   token,
-		Message: "Berhasil Login",
-	})
+	return token
 }
 
 func Register(c echo.Context) error {
@@ -81,24 +71,24 @@ func Register(c echo.Context) error {
 	return utils.ResponseUser(c, utils.JSONResponseUser{
 		Code:       http.StatusCreated,
 		CreateUser: userCreated,
-		Message:    "Berhasil menambahkan user",
+		Message:    "Berhasil mendaftar",
 	})
 }
 
-func SignIn(c echo.Context, email, password string) (string, error) {
+func SignIn(c echo.Context, email, password string) error {
 	var err error
 	u := new(entity.User)
 	db := database.GetDB(c)
 
 	err = db.Debug().Model(entity.User{}).Where("email = ?", email).Take(&u).Error
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	err = utils.VerifyPassword(u.Password, password)
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
-		return "", err
+		return err
 	}
 
-	return utils.CreateToken(c, u.ID)
+	return utils.CreateToken(c, u.ID, u.Name)
 }

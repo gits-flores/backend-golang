@@ -12,13 +12,25 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func CreateToken(c echo.Context, user_id uint32) (string, error) {
-	claims := jwt.MapClaims{}
+func CreateToken(c echo.Context, user_id uint32, name string) error {
+
+	token := jwt.New(jwt.SigningMethodHS256)
+	claims := token.Claims.(jwt.MapClaims)
 	claims["authorized"] = true
 	claims["user_id"] = user_id
-	claims["exp"] = time.Now().Add(time.Hour * 1).Unix() //Token expires after 1 hour
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(config.GetConfigs(c).Secret))
+	claims["name"] = name
+	claims["exp"] = time.Now().Add(time.Hour * 72).Unix() //Token expires after 1 hour
+
+	t, err := token.SignedString([]byte("secret"))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"token":   t,
+		"data":    user_id,
+		"message": "Selamat Datang " + name,
+	})
 
 }
 
