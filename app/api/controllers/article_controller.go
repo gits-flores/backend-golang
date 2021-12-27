@@ -23,6 +23,45 @@ func Articles(c echo.Context) error {
 	return c.JSON(http.StatusOK, articles)
 }
 
+func GetArticleUser(c echo.Context) error {
+	id := c.Param("id")
+	db := database.GetDB(c)
+
+	articles := []entity.SavedArticle{}
+	db.Preload("Article.User").Preload("User").Where("user_id = ?", id).Find(&articles)
+	// spew.Dump(json.Marshal(users))
+	// return c.JSON(http.StatusOK, users)
+
+	return c.JSON(http.StatusOK, articles)
+}
+
+func CekArticleUser(c echo.Context) error {
+	user_id := c.Param("user_id")
+	article_id := c.Param("article_id")
+	db := database.GetDB(c)
+
+	articles := []entity.SavedArticle{}
+	db.Where("user_id = ?", user_id).Where("article_id = ?", article_id).First(&articles)
+	// spew.Dump(json.Marshal(users))
+	// return c.JSON(http.StatusOK, users)
+
+	return c.JSON(http.StatusOK, articles)
+}
+
+func DeleteArticleUser(c echo.Context) error {
+	user_id := c.Param("user_id")
+	article_id := c.Param("article_id")
+	db := database.GetDB(c)
+
+	articles := []entity.SavedArticle{}
+	db.Where("user_id = ?", user_id).Where("article_id = ?", article_id).Delete(&articles)
+	return utils.ResponseUser(c, utils.JSONResponseUser{
+		Code:       http.StatusCreated,
+		CreateUser: articles,
+		Message:    "Berhasil menghapus article tersimpan",
+	})
+}
+
 func FindArticle(c echo.Context) error {
 	id := c.Param("id")
 	db := database.GetDB(c)
@@ -99,5 +138,41 @@ func SaveArticle(c echo.Context) error {
 		Code:       http.StatusCreated,
 		CreateUser: articleCreated,
 		Message:    "Berhasil menambahkan article",
+	})
+}
+
+func SaveArticleUser(c echo.Context) error {
+	u := new(entity.SavedArticle)
+
+	if err := c.Bind(u); err != nil {
+		return utils.ResponseError(c, utils.Error{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+	}
+
+	u.Prepare()
+	err := u.Validate("")
+	if err != nil {
+		return utils.ResponseError(c, utils.Error{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+	}
+
+
+	articleCreated, err := models.SaveArticleUser(c, u)
+
+	if err != nil {
+		return utils.ResponseError(c, utils.Error{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+	}
+
+	return utils.ResponseUser(c, utils.JSONResponseUser{
+		Code:       http.StatusCreated,
+		CreateUser: articleCreated,
+		Message:    "Berhasil menambahkan article user",
 	})
 }
