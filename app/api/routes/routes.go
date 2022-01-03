@@ -20,5 +20,13 @@ func InitializeRoutes(e *echo.Echo) *echo.Echo {
 	auth.GET("/cek-article-user/:user_id/:article_id", controllers.CekArticleUser)
 	auth.GET("/delete-article-user/:user_id/:article_id", controllers.DeleteArticleUser)
 
+	auth.GET("/courses", controllers.Courses)
+	auth.GET("/courses/:id", controllers.FindCourse)
+	auth.POST("/course", controllers.SaveCourse)
+
+	auth.GET("/modules", controllers.Modules)
+	auth.GET("/modules/:id", controllers.FindModule)
+	auth.POST("/module", controllers.SaveModule)
+
 	return e
 }

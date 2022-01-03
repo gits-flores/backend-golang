@@ -14,6 +14,7 @@ import (
 
 type Article struct {
 	gorm.Model
+	// ID        uint32 `gorm:"primary_key;auto_increment" json:"id"`
 	Title     string `gorm:"not null;" json:"title" form:"title"`
 	Content   string `gorm:"not null;" json:"content" form:"content"`
 	Thumbnail string `gorm:"not null;" json:"thumbnail" form:"thumbnail"`
