@@ -17,10 +17,9 @@ type Module struct {
 	// ID          uint32 `gorm:"primary_key;auto_increment" json:"id"`
 	Title     string `gorm:"not null;" json:"title" form:"title"`
 	Thumbnail string `gorm:"not null;" json:"thumbnail" form:"thumbnail"`
-	User      User   `json:"user"`
-	UserID    uint32 `gorm:"not null" json:"user_id" form:"user_id"`
-	Course    Course `json:"course"`
-	CourseID  uint32 `gorm:"not null" json:"course_id" form:"course_id"`
+	Content     string `gorm:"not null;" json:"content" form:"content"`
+	CourseID uint32 `gorm:"not null" json:"course_id" form:"course_id"`
+	Course   Course
 }
 
 func (m *Module) BeforeSave(context echo.Context) error {
@@ -59,7 +58,7 @@ func (m *Module) Prepare() {
 	m.ID = 0
 	m.Title = html.EscapeString(strings.TrimSpace(m.Title))
 	m.Thumbnail = html.EscapeString(strings.TrimSpace(m.Thumbnail))
-	m.User = User{}
+	m.Content = html.EscapeString(strings.TrimSpace(m.Content))
 	m.Course = Course{}
 	m.CreatedAt = time.Now()
 	m.UpdatedAt = time.Now()
@@ -68,6 +67,10 @@ func (m *Module) Prepare() {
 func (m *Module) Validate(action string) error {
 	if m.Title == "" {
 		return errors.New("Required Title")
+	}
+
+	if m.Content == "" {
+		return errors.New("Required Content")
 	}
 
 	return nil

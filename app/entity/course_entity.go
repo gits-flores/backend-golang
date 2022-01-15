@@ -18,8 +18,10 @@ type Course struct {
 	Title       string `gorm:"not null;" json:"title" form:"title"`
 	Thumbnail   string `gorm:"not null;" json:"thumbnail" form:"thumbnail"`
 	Description string `gorm:"not null;" json:"description" form:"description"`
+	Rangkuman string `gorm:"not null;" json:"rangkuman" form:"rangkuman"`
 	User        User   `json:"user"`
 	UserID      uint32 `gorm:"not null" json:"user_id" form:"user_id"`
+	Modules []Module `gorm:"ForeignKey:CourseID"`
 }
 
 func (c *Course) BeforeSave(context echo.Context) error {
@@ -71,6 +73,10 @@ func (c *Course) Validate(action string) error {
 
 	if c.Description == "" {
 		return errors.New("Required Description")
+	}
+
+	if c.Rangkuman == "" {
+		return errors.New("Required Rangkuman")
 	}
 
 	return nil

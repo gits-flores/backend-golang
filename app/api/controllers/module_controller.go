@@ -83,7 +83,7 @@ func Modules(c echo.Context) error {
 	db := database.GetDB(c)
 
 	Modules := []entity.Module{}
-	db.Preload("User").Find(&Modules)
+	db.Preload("Course.User").Find(&Modules)
 
 	return c.JSON(http.StatusOK, Modules)
 }
@@ -93,7 +93,7 @@ func FindModule(c echo.Context) error {
 	db := database.GetDB(c)
 
 	module := entity.Module{}
-	db.Preload("User").First(&module, id)
+	db.First(&module, id)
 
 	return c.JSON(http.StatusOK, module)
 }
