@@ -18,6 +18,7 @@ func InitializeRoutes(e *echo.Echo) *echo.Echo {
 	auth.POST("/save-article-user", controllers.SaveArticleUser)
 	auth.GET("/save-article-user/:id", controllers.GetArticleUser)
 	auth.GET("/cek-article-user/:user_id/:article_id", controllers.CekArticleUser)
+
 	auth.GET("/delete-article-user/:user_id/:article_id", controllers.DeleteArticleUser)
 
 	auth.GET("/courses", controllers.Courses)
@@ -27,6 +28,10 @@ func InitializeRoutes(e *echo.Echo) *echo.Echo {
 	auth.GET("/modules", controllers.Modules)
 	auth.GET("/modules/:id", controllers.FindModule)
 	auth.POST("/module", controllers.SaveModule)
+
+	auth.POST("/enroll-course-user", controllers.EnrollCourse)
+	//auth.GET("/enroll-course-user/:id", controllers.GetEnrollCourse)
+	// auth.GET("/cek-course-user/:user_id/:course_id", controllers.CekCourseUser)
 
 	return e
 }
